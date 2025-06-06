@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Plan</title>
+    <style>
+        :root {
+            --bg-primary: #1F232A;
+            --bg-secondary: #2A2F37;
+            --text-primary: #D1D5DB;
+            --text-secondary: #9CA3AF;
+            --border-color: #4B5563;
+            --accent-color: #3B82F6;
+            --accent-color-rgb: 59, 130, 246; /* RGB for accent color */
+            --accent-text-color: #FFFFFF;
+            --input-bg: #1F232A;
+            --card-header-bg: #374151;
+            --danger-color: #EF4444;
+            --success-color: #10B981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%; 
+            max-width: 1600px;
+            margin: auto;
+            overflow: visible;
+            padding: 0 15px;
+        }
+
+        header {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 15px 0;
+            border-bottom: var(--accent-color) 4px solid;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            text-align: center;
+            text-transform: capitalize;
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            flex: 1;
+            min-width: 260px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+            display: flex;  
+            flex-direction: column;  
+        }
+        
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .card:not(.card-chart) p#total-tasks {
+            font-size: 2.8em;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-align: center;
+            margin-top: auto; 
+            margin-bottom: auto; 
+        }
+
+        .card-chart {
+            height: 280px;
+        }
+
+        .card-chart h3 {
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .chart-container {
+            flex-grow: 1;  
+            position: relative;  
+            min-height: 0;  
+            width: 100%;
+        }
+        
+        .collapsible-trigger {
+            background-color: var(--accent-color);
+            color: var(--accent-text-color);
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 0;
+            transition: background-color 0.2s ease, margin-bottom 0.3s ease-out;
+        }
+        .collapsible-trigger:hover {
+            background-color: #2563EB;
+        }
+        .collapsible-trigger.open {
+             margin-bottom: 20px;
+        }
+
+        .form-container-collapsible {
+            background: var(--bg-secondary);
+            padding: 0px 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
+        }
+        .form-container-collapsible.open {
+            max-height: 600px; /* Adjusted max-height for form content */
+            padding: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); 
+            gap: 15px;
+            align-items: center;
+        }
+
+        .form-container-collapsible input[type="text"],
+        .form-container-collapsible input[type="date"],
+        .form-container-collapsible select,
+        .form-container-collapsible textarea,
+        .task-list select,
+        #task-filter-input {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 0;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-container-collapsible select,
+        .task-list select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23D1D5DB%22%20d%3D%22M287%2069.4a17.6%2017.6%0%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.4-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: .7em;
+            padding-right: 35px;
+        }
+
+        .form-container-collapsible textarea {
+            grid-column: 1 / -1;
+            height: 80px; 
+            resize: vertical;
+        }
+        .form-container-collapsible .add-task-button {
+             grid-column: 1 / -1;
+        }
+
+        .form-container-collapsible input::placeholder,
+        .form-container-collapsible textarea::placeholder,
+        #task-filter-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .form-container-collapsible .add-task-button,
+        .task-list .action-button { 
+            padding: 10px 20px; 
+            color: var(--accent-text-color);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px; 
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+            margin-right: 8px; 
+        }
+        .task-list .action-button:last-child {
+            margin-right: 0;
+        }
+
+        .form-container-collapsible .add-task-button {
+            background: var(--success-color);
+            justify-self: start;
+            margin-top: 10px;
+        }
+        .form-container-collapsible .add-task-button:hover {
+            background-color: #059669;
+        }
+
+        .task-list .update-button { /* Renamed from save-button conceptually */
+             background: var(--accent-color);
+        }
+        .task-list .update-button:hover {
+            background-color: #2563EB;
+        }
+        .task-list .delete-button {
+            background: var(--danger-color);
+        }
+        .task-list .delete-button:hover {
+            background-color: #DC2626;
+        }
+        
+        .task-list .action-button:active {
+            transform: translateY(1px);
+        }
+        
+        .task-list .action-button .icon-image {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+        }
+
+        .task-list {
+            background: var(--bg-secondary);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            overflow-x: auto;
+        }
+        .task-list h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            font-weight: 500;
+        }
+        .filter-container {
+            margin-bottom: 15px;
+        }
+
+        .task-list table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0; 
+            min-width: 800px;
+        }
+
+        .task-list th, .task-list td {
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: middle;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+         .task-list td:nth-child(1), /* Task Name */
+         .task-list td:nth-child(7)  /* Description */
+         {
+            white-space: normal; 
+            min-width: 150px; 
+        }
+        .task-list td .milestone-edit-input { /* Style for editable milestone input */
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+        .task-list td .milestone-edit-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.3);
+        }
+
+
+        .task-list th {
+            background: var(--card-header-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .task-list td select {
+            padding: 8px 10px;
+            padding-right: 30px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            .dashboard {
+                flex-direction: column;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-container-collapsible .add-task-button {
+                width: 100%;
+            }
+            .card-chart {
+                height: 250px;
+            }
+            .task-list th, .task-list td {
+                font-size: 13px;
+                padding: 8px;
+            }
+             .task-list td:nth-child(1), .task-list td:nth-child(7) {
+                min-width: 120px;
+            }
+            .task-list .action-button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Project Planning Dashboard</h1>
+    </header>
+
+    <div class="container">
+        <div class="dashboard">
+            <div class="card">
+                <h3>Total Tasks</h3>
+                <p id="total-tasks">0</p>
+            </div>
+            <div class="card card-chart">
+                <h3>Task Status Overview</h3>
+                <div class="chart-container">
+                    <canvas id="completionChart"></canvas>
+                </div>
+            </div>
+            <div class="card card-chart">
+                <h3>Task Schedule Overview</h3>
+                <div class="chart-container">
+                    <canvas id="ganttChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <button id="toggle-form-btn" class="collapsible-trigger">➕ Create New Task</button>
+        <div id="add-task-panel" class="form-container-collapsible">
+            <div class="form-grid">
+                <input type="text" id="task-name" placeholder="Task Name">
+                <input type="text" id="task-poc" placeholder="Point of Contact (POC)">
+                <input type="date" id="task-start-date" title="Task Start Date">
+                <input type="date" id="task-due-date" title="Task End Date (Due Date)">
+                <select id="task-status">
+                    <option value="Open">Open</option>
+                    <option value="On-Going">On-Going</option>
+                    <option value="Done">Done</option>
+                    <option value="On-Hold">On-Hold</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+                <textarea id="task-desc" placeholder="Task Description"></textarea>
+                <button onclick="addTask()" class="add-task-button">Add Task</button>
+            </div>
+        </div>
+
+        <div class="task-list">
+            <h2>Current Tasks</h2>
+            <div class="filter-container">
+                <input type="text" id="task-filter-input" placeholder="Filter tasks...">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>POC</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Milestone</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="task-table-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script>
+        let tasks = [];
+        let completionPieChart = null;
+        let taskGanttChart = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButton = document.getElementById('toggle-form-btn');
+            const addTaskPanel = document.getElementById('add-task-panel');
+
+            toggleButton.addEventListener('click', () => {
+                addTaskPanel.classList.toggle('open');
+                toggleButton.classList.toggle('open');
+                if (addTaskPanel.classList.contains('open')) {
+                    toggleButton.innerHTML = '➖ Close Panel';
+                } else {
+                    toggleButton.innerHTML = '➕ Create New Task';
+                }
+            });
+
+            document.getElementById('task-filter-input').addEventListener('input', () => {
+                renderTasks(); 
+            });
+            
+            loadTasksFromLocalStorage();
+            renderTasks();
+            updateDashboard();
+        });
+
+        function getCssVariable(variable) {
+            return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
+        }
+
+        function addTask() {
+            const taskName = document.getElementById('task-name').value;
+            const taskPOC = document.getElementById('task-poc').value;
+            const taskStartDate = document.getElementById('task-start-date').value;
+            const taskDueDate = document.getElementById('task-due-date').value;
+            const taskStatus = document.getElementById('task-status').value;
+            // Milestone no longer read from form here
+            const taskDesc = document.getElementById('task-desc').value;
+
+            if (!taskName || !taskStartDate || !taskDueDate) {
+                alert("Task Name, Start Date, and End Date are required.");
+                return;
+            }
+            if (new Date(taskStartDate) > new Date(taskDueDate)) {
+                alert("Start Date cannot be after End Date.");
+                return;
+            }
+
+            const task = {
+                id: Date.now(),
+                name: taskName,
+                poc: taskPOC,
+                startDate: taskStartDate,
+                dueDate: taskDueDate, 
+                status: taskStatus,
+                milestone: '', // Initialize milestone as empty string
+                desc: taskDesc
+            };
+
+            tasks.push(task);
+            saveTasksToLocalStorage();
+            renderTasks();
+            updateDashboard();
+
+            document.getElementById('task-name').value = '';
+            document.getElementById('task-poc').value = '';
+            document.getElementById('task-start-date').value = '';
+            document.getElementById('task-due-date').value = '';
+            document.getElementById('task-status').value = 'Open';
+            // No milestone field to clear here
+            document.getElementById('task-desc').value = '';
+        }
+
+        function renderTasks() {
+            const taskTableBody = document.getElementById('task-table-body');
+            taskTableBody.innerHTML = '';
+
+            const filterText = document.getElementById('task-filter-input') ? document.getElementById('task-filter-input').value.toLowerCase() : '';
+            
+            const filteredTasks = tasks.filter(task => {
+                if (!filterText) return true;
+                const startDateString = task.startDate ? new Date(task.startDate).toLocaleDateString().toLowerCase() : '';
+                const endDateString = task.dueDate ? new Date(task.dueDate).toLocaleDateString().toLowerCase() : '';
+                const milestoneString = task.milestone ? task.milestone.toLowerCase() : '';
+
+                return task.name.toLowerCase().includes(filterText) ||
+                       (task.poc && task.poc.toLowerCase().includes(filterText)) ||
+                       (task.desc && task.desc.toLowerCase().includes(filterText)) ||
+                       task.status.toLowerCase().includes(filterText) ||
+                       startDateString.includes(filterText) ||
+                       endDateString.includes(filterText) ||
+                       milestoneString.includes(filterText);
+            });
+
+            filteredTasks.forEach(task => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-task-id', task.id);
+                const startDateDisplay = task.startDate ? new Date(task.startDate).toLocaleDateString() : 'N/A';
+                const endDateDisplay = task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'N/A';
+
+                row.innerHTML = `
+                    <td>${task.name}</td>
+                    <td>${task.poc || 'N/A'}</td>
+                    <td>${startDateDisplay}</td>
+                    <td>${endDateDisplay}</td>
+                    <td>
+                        <select id="status-select-${task.id}">
+                            <option value="Open" ${task.status === 'Open' ? 'selected' : ''}>Open</option>
+                            <option value="On-Going" ${task.status === 'On-Going' ? 'selected' : ''}>On-Going</option>
+                            <option value="Done" ${task.status === 'Done' ? 'selected' : ''}>Done</option>
+                            <option value="On-Hold" ${task.status === 'On-Hold' ? 'selected' : ''}>On-Hold</option>
+                            <option value="Cancelled" ${task.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="milestone-edit-input" id="milestone-input-${task.id}" value="${task.milestone || ''}" placeholder="Set Milestone">
+                    </td>
+                    <td>${task.desc || 'N/A'}</td>
+                    <td class="actions-cell">
+                        <button class="action-button update-button" onclick="saveTaskChanges(${task.id})" title="Save Changes">
+                             <img src="Desktop\check.svg" alt="Save" class="icon-image">
+                        </button>
+                        <button class="action-button delete-button" onclick="deleteTask(${task.id})" title="Delete Task">
+                             <img src="icons/delete-icon.svg" alt="Delete" class="icon-image">
+                        </button>
+                    </td>
+                `;
+                taskTableBody.appendChild(row);
+            });
+        }
+
+        function saveTaskChanges(taskId) { // Renamed from saveTaskStatus
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex > -1) {
+                const newStatus = document.getElementById(`status-select-${taskId}`).value;
+                const newMilestone = document.getElementById(`milestone-input-${taskId}`).value; // Get milestone value
+
+                tasks[taskIndex].status = newStatus;
+                tasks[taskIndex].milestone = newMilestone; // Save milestone
+
+                saveTasksToLocalStorage();
+                renderTasks(); 
+                updateDashboard();
+            } else {
+                 console.error("Task not found for saving changes:", taskId);
+            }
+        }
+
+        function deleteTask(taskId) {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex > -1) {
+                tasks.splice(taskIndex, 1);
+                saveTasksToLocalStorage();
+                renderTasks();
+                updateDashboard();
+            }
+        }
+        
+        function saveTasksToLocalStorage() {
+            localStorage.setItem('projectTasks', JSON.stringify(tasks));
+        }
+
+        function loadTasksFromLocalStorage() {
+            const storedTasks = localStorage.getItem('projectTasks');
+            if (storedTasks) {
+                tasks = JSON.parse(storedTasks);
+                // Ensure all loaded tasks have a milestone property
+                tasks.forEach(task => {
+                    if (typeof task.milestone === 'undefined') {
+                        task.milestone = '';
+                    }
+                });
+            }
+        }
+
+        function updateDashboard() {
+            document.getElementById('total-tasks').innerText = tasks.length;
+
+            const statusCounts = tasks.reduce((acc, task) => {
+                acc[task.status] = (acc[task.status] || 0) + 1;
+                return acc;
+            }, {});
+
+            const textColor = getCssVariable('--text-primary');
+            const gridColor = getCssVariable('--border-color');
+            const chartColors = {
+                'Open': getCssVariable('--accent-color'),
+                'On-Going': '#F59E0B', 
+                'Done': '#10B981',     
+                'On-Hold': '#6B7280',  
+                'Cancelled': '#EF4444' 
+            };
+            const defaultChartColor = '#A0AEC0';
+
+            const pieChartLabels = Object.keys(statusCounts);
+            const pieChartData = pieChartLabels.map(label => statusCounts[label]);
+            const pieChartBackgroundColors = pieChartLabels.map(label => chartColors[label] || defaultChartColor);
+
+            const completionChartCtx = document.getElementById('completionChart').getContext('2d');
+            if (completionPieChart) {
+                completionPieChart.destroy();
+            }
+            completionPieChart = new Chart(completionChartCtx, {
+                type: 'pie',
+                data: {
+                    labels: pieChartLabels,
+                    datasets: [{
+                        data: pieChartData,
+                        backgroundColor: pieChartBackgroundColors,
+                        borderColor: getCssVariable('--bg-secondary'),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { color: textColor, font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+
+            const ganttChartCtx = document.getElementById('ganttChart').getContext('2d');
+            if (taskGanttChart) {
+                taskGanttChart.destroy();
+            }
+
+            const validGanttTasks = tasks.filter(task => task.startDate && task.dueDate);
+            const sortedTasks = validGanttTasks.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+            
+            const ganttData = {
+                 labels: sortedTasks.map(task => task.name.length > 15 ? task.name.substring(0,12)+'...' : task.name),
+                 datasets: [{
+                    label: 'Task Duration',
+                    data: sortedTasks.map(task => {
+                        return [new Date(task.startDate).getTime(), new Date(task.dueDate).getTime()];
+                    }),
+                    backgroundColor: sortedTasks.map(task => chartColors[task.status] || defaultChartColor),
+                    borderColor: getCssVariable('--bg-secondary'),
+                    borderWidth: 1,
+                    borderSkipped: false,
+                    barPercentage: 0.6, 
+                    categoryPercentage: 0.7 
+                 }]
+            };
+
+            taskGanttChart = new Chart(ganttChartCtx, {
+                type: 'bar',
+                data: ganttData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'MMM dd, yy',
+                                displayFormats: { day: 'MMM dd' }
+                            },
+                            min: sortedTasks.length > 0 ?
+                                 new Date(Math.min(...sortedTasks.map(t => new Date(t.startDate).getTime()))).getTime() - (24*60*60*1000 * 2)
+                                 : new Date().getTime(),
+                            ticks: { color: textColor, font: { size: 9 } },
+                            grid: { color: gridColor }
+                        },
+                        y: {
+                            ticks: { color: textColor, font: { size: 9 }, autoSkip: false },
+                            grid: { display: false } 
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                             display: true, 
+                             position: 'bottom',
+                             labels: { color: textColor, font: {size: 10} }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const taskIndex = tooltipItems[0].dataIndex;
+                                    return sortedTasks[taskIndex] ? sortedTasks[taskIndex].name : '';
+                                },
+                                label: function(context) {
+                                    const taskIndex = context.dataIndex;
+                                    const task = sortedTasks[taskIndex];
+                                    if (!task) return '';
+                                    const start = new Date(task.startDate).toLocaleDateString();
+                                    const end = new Date(task.dueDate).toLocaleDateString();
+                                    return `Duration: ${start} - ${end} (Status: ${task.status})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
