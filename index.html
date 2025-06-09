@@ -418,7 +418,7 @@
         // =========================================================================
         // SCRIPT CONFIGURATION
         // =========================================================================
-        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyFWhDsIVX2gDT_ifr81B4s0Dj5G1E5NF8RtIA_aLAAnnvd8AYxgmhL3lTi39CHwSmy6g/exec';
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbze5igOxv5E1AzFz5q18EcN5rAnuHgy7A5ygUq6bk0O9qw0PbPuT0m9cOYfIen2acD4rA/exec';
         // =========================================================================
 
         let tasks = [];
@@ -453,6 +453,7 @@
                 document.body.style.cursor = 'wait'; // Show loading cursor
                 const res = await fetch(GOOGLE_SHEET_URL, {
                     method: 'POST',
+                    redirect: 'follow', // Important for Google Script redirects
                     body: JSON.stringify(payload),
                     headers: { 'Content-Type': 'application/json' }
                 });
